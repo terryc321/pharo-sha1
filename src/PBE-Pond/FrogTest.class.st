@@ -47,3 +47,28 @@ FrogTest >> testMD5 [
 	
 	
 ]
+
+{ #category : 'tests' }
+FrogTest >> testMD5sum [
+	" check md5 returned is correct "
+	"tribute https://en.wikipedia.org/wiki/MD5 "
+	self assert: (Frog new md5sum: '/home/terry/bin/cuis-smalltalk/Cuis-Smalltalk-Dev/.git/objects/pack/pack-61fe230b540d7d815ff049a3895f03c1f6657c11.pack') equals: 'c8dc00f395230ff7a0844e96db7c43e2' .
+	
+	"some stuff"
+#(
+c8dc00f395230ff7a0844e96db7c43e2  /home/terry/bin/cuis-smalltalk/Cuis-Smalltalk-Dev/.git/objects/pack/pack-61fe230b540d7d815ff049a3895f03c1f6657c11.pack
+>
+>>d330e882e3179d0d7926e7863d3576a4  /home/terry/bin/android/android-studio-2025.1.2.11-linux.tar.gz
+>
+>>e6f50fc996f47a96de85405325a20d2c  /home/terry/Android/Sdk/system-images/android-36/google_apis_playstore/x86_64/system.img
+>
+>>67ecea33f0bb5e5dbfd765b049fefc7c  /home/terry/.android/avd/Medium_Phone.avd/snapshots/default_boot/ram.img
+>
+>>f474529b8a34f4f8c81e562f2f3114d3  /home/terry/.android/avd/Medium_Phone.avd/userdata-qemu.img.qcow2
+>	
+).
+
+	
+	
+	
+]
