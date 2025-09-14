@@ -5,8 +5,8 @@ Class {
 	#package : 'PBE-Pond'
 }
 
-{ #category : 'tests' }
-MyLearning >> test1 [
+{ #category : 'Sha1' }
+Frog >> test1 [
 "test sha1 for rfc example"
 ^ (SHA1 new hashStream: 'The quick brown fox jumps over the lazy dog' readStream) hex.
 
