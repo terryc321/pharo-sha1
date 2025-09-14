@@ -69,6 +69,30 @@ md5sum: aFile
 aPositionableStream 
 asFileReference
 
+Lets try to dig deeper as to why md5sum over a file is taking so long, including using Streams
+
+```
+>md5sum /home/terry/.emacs.d/.cache/lsp/clojure/clojure-lsp.zip
+db88b025fa0406b4fcc8eb652a0a7fdd  /home/terry/.emacs.d/.cache/lsp/clojure/clojure-lsp.zip
+""Frog new profileMD5a . ""
+MessageTally spyOn: [Frog new profileMD5a ].
+```
+
+profiling
+
+Frog new profileMD5a . 
+MessageTally spyOn: [Frog new profileMD5a ].
+
+f := Frog new.
+[ f profileMD5a ] timeToRun . ""0:00:00:07.476""
+
+ 7476 / 46 asFloat ""162.52173913043478""
+
+f := Frog new.
+r := nil.
+MessageTally spyOn: [ r := f profileMD5b ] .
+
+
 
 
 
@@ -130,17 +154,128 @@ m := MD5 new hashMessage:aString.
 { #category : 'Sha1' }
 Frog >> md5sum: aFilename [
 "compute md5 from a file stream"
-|m fr str |
-('/tmp/smalltalk/pack-61fe230b540d7d815ff049a3895f03c1f6657c11.pack' asFileReference) binaryReadStreamDo: [ :fr | 
-     m := MD5 new hashStream: fr .
+| md5 file res hash |
+md5 := MD5 new.
+"dat := '/tmp/smalltalk/pack-61fe230b540d7d815ff049a3895f03c1f6657c11.pack'."
+file := aFilename asFileReference. 
+res := nil.
+file binaryReadStreamDo: [ :stream | 
+     res := MD5 new hashStream: stream .
 	 ].
-
-"m := MD5 new hashMessage: str. (aFileStream contents)."
-"str := fr contents. "
-^ m hex. 
+^ res hex . 
 
 
 
 
 
+
+]
+
+{ #category : 'Sha1' }
+Frog >> profileMD5a [
+">time md5sum /home/terry/.emacs.d/.cache/lsp/clojure/clojure-lsp.zip
+db88b025fa0406b4fcc8eb652a0a7fdd  /home/terry/.emacs.d/.cache/lsp/clojure/clojure-lsp.zip
+
+real	0m0.046s
+user	0m0.042s
+sys	0m0.004s
+	
+pharo takes 7476  c takes 46  	, ""162.52173913043478 times slower ""
+0:00:00:07.476	
+	"	
+^ (self md5sum: '/home/terry/.emacs.d/.cache/lsp/clojure/clojure-lsp.zip') = ('db88b025fa0406b4fcc8eb652a0a7fdd').
+
+
+
+]
+
+{ #category : 'Sha1' }
+Frog >> profileMD5b [
+"m5sum on a much much larger file" 
+^ (self md5sum: '/home/terry/bin/cuis-smalltalk/Cuis-Smalltalk-Dev/.git/objects/pack/pack-61fe230b540d7d815ff049a3895f03c1f6657c11.pack') = ('c8dc00f395230ff7a0844e96db7c43e2').
+"unix 
+time md5sum /home/terry/bin/cuis-smalltalk/Cuis-Smalltalk-Dev/.git/objects/pack/pack-61fe230b540d7d815ff049a3895f03c1f6657c11.pack
+c8dc00f395230ff7a0844e96db7c43e2  /home/terry/bin/cuis-smalltalk/Cuis-Smalltalk-Dev/.git/objects/pack/pack-61fe230b540d7d815ff049a3895f03c1f6657c11.pack
+
+real	0m1.360s
+user	0m1.279s
+sys	0m0.082s
+terry@terry-MS-7D96:~/code/smalltalk$ 
+"
+
+"
+pharo smalltalk
+- 280645 tallies, 280647 msec.
+
+**Tree**
+--------------------------------
+Process: (40) Morphic UI Process: nil
+--------------------------------
+66.7% {187084ms} Frog>>md5sum:
+  66.7% {187084ms} FileReference(AbstractFileReference)>>binaryReadStreamDo:
+    66.7% {187084ms} FullBlockClosure(BlockClosure)>>ensure:
+      66.7% {187084ms} FileReference(AbstractFileReference)>>binaryReadStreamDo:
+        66.7% {187084ms} Frog>>md5sum:
+          66.7% {187084ms} MD5NonPrimitive(MD5)>>hashStream:
+            66.2% {185691ms} MD5NonPrimitive>>processBuffer:
+              62.1% {174175ms} MD5NonPrimitive>>rounds:
+                |62.0% {174135ms} Array(Collection)>>doWithIndex:
+                |  61.9% {173750ms} Array(SequenceableCollection)>>withIndexDo:
+                |    61.4% {172314ms} MD5NonPrimitive>>rounds:
+                |      61.3% {172122ms} MD5NonPrimitive>>round:selector:round:
+                |        55.3% {155229ms} MD5NonPrimitive>>step:template:selector:
+                |          |11.1% {31062ms} primitives
+                |          |10.0% {28197ms} MD5NonPrimitive>>ffA:B:C:D:M:S:T:
+                |          |  |3.2% {9014ms} primitives
+                |          |  |3.1% {8642ms} ThirtyTwoBitRegister>>+=
+                |          |  |3.1% {8592ms} MD5NonPrimitive>>fX:Y:Z:
+                |          |  |  1.0% {2914ms} ThirtyTwoBitRegister>>bitInvert
+                |          |  |  1.0% {2895ms} ThirtyTwoBitRegister(FixedBitWidthRegister)>>bitAnd:
+                |          |9.5% {26551ms} MD5NonPrimitive>>ggA:B:C:D:M:S:T:
+                |          |  |3.2% {9051ms} primitives
+                |          |  |3.0% {8383ms} MD5NonPrimitive>>gX:Y:Z:
+                |          |  |  |1.0% {2877ms} ThirtyTwoBitRegister(FixedBitWidthRegister)>>bitAnd:
+                |          |  |  |1.0% {2830ms} ThirtyTwoBitRegister>>bitInvert
+                |          |  |2.6% {7293ms} ThirtyTwoBitRegister>>+=
+                |          |8.9% {25083ms} MD5NonPrimitive>>iiA:B:C:D:M:S:T:
+                |          |  |3.1% {8600ms} primitives
+                |          |  |2.7% {7653ms} ThirtyTwoBitRegister>>+=
+                |          |  |2.7% {7496ms} MD5NonPrimitive>>iX:Y:Z:
+                |          |8.5% {23879ms} MD5NonPrimitive>>hhA:B:C:D:M:S:T:
+                |          |  |3.2% {8873ms} primitives
+                |          |  |3.0% {8353ms} ThirtyTwoBitRegister>>+=
+                |          |  |1.7% {4670ms} MD5NonPrimitive>>hX:Y:Z:
+                |          |7.3% {20456ms} OrderedCollection>>at:
+                |        6.0% {16893ms} primitives
+              1.5% {4232ms} primitives
+              1.4% {4024ms} ThirtyTwoBitRegister class(FixedBitWidthRegister class)>>new
+                1.1% {3150ms} ThirtyTwoBitRegister>>load:
+
+**Leaves**
+11.5% {32159ms} ThirtyTwoBitRegister>>+=
+11.1% {31062ms} MD5NonPrimitive>>step:template:selector:
+7.4% {20897ms} OrderedCollection>>at:
+6.0% {16893ms} MD5NonPrimitive>>round:selector:round:
+3.2% {9051ms} MD5NonPrimitive>>ggA:B:C:D:M:S:T:
+3.2% {9014ms} MD5NonPrimitive>>ffA:B:C:D:M:S:T:
+3.2% {8873ms} MD5NonPrimitive>>hhA:B:C:D:M:S:T:
+3.1% {8600ms} MD5NonPrimitive>>iiA:B:C:D:M:S:T:
+2.9% {8129ms} ThirtyTwoBitRegister>>bitInvert
+2.5% {7090ms} ThirtyTwoBitRegister>>leftRotateBy:
+2.1% {5772ms} ThirtyTwoBitRegister(FixedBitWidthRegister)>>bitAnd:
+1.8% {5118ms} ThirtyTwoBitRegister(FixedBitWidthRegister)>>bitXor:
+1.5% {4232ms} MD5NonPrimitive>>processBuffer:
+
+**Memory**
+	old			+0 bytes
+	young		+11,604,152 bytes
+	used		+11,604,152 bytes
+	free		-11,604,152 bytes
+
+**GCs**
+	full			0 totalling 0ms (0.0% uptime)
+	incr		15789 totalling 15,106ms (5.0% uptime), avg 1.0ms
+	tenures		12,822 (avg 1 GCs/tenure)
+	root table	0 overflows
+"
 ]

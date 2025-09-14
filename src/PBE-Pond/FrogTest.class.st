@@ -51,9 +51,8 @@ FrogTest >> testMD5 [
 
 { #category : 'tests' }
 FrogTest >> testMD5sum [
-	" check md5 returned is correct "
-	"tribute https://en.wikipedia.org/wiki/MD5 "
-	self assert: (Frog new md5sum: '/home/terry/bin/cuis-smalltalk/Cuis-Smalltalk-Dev/.git/objects/pack/pack-61fe230b540d7d815ff049a3895f03c1f6657c11.pack') equals: 'c8dc00f395230ff7a0844e96db7c43e2' .
+	"md5sum on a file"
+	self assert: (Frog new md5sum: '/home/terry/code/smalltalk/LICENSE') equals: 'b81f7ad15568a5844f69e360f0d64405' .
 	
 	"some stuff"
 #(
