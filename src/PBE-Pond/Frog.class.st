@@ -1,4 +1,25 @@
 "
+# Example
+
+
+Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==
+Guid: 258EAFA5-E914-47DA-95CA-C5AB0DC85B11
+
+```
+| key guid concatKeyGuid sha1 enc dict | 
+key := 'dGhlIHNhbXBsZSBub25jZQ=='.
+guid := '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'.
+""concatenate web socket key with globally unique identifier - fixed ?""
+concatKeyGuid := key , guid .
+""compute sha1 of concatenated headers""
+sha1 := SHA1 new hashMessage: concatKeyGuid . 
+""compute base64 encoding""
+enc := ZnBase64Encoder new encode: sha1. 
+""examine all the players ""
+{ #key -> key . #guid -> guid . #concat -> concatKeyGuid . #sha1 -> sha1 . #enc -> enc} inspect . 
+```
+
+
 To prove that the handshake was received, the server has to take two
    pieces of information and combine them to form a response.  The first
    piece of information comes from the |Sec-WebSocket-Key| header field
@@ -31,8 +52,8 @@ Concretely, if as in the example above, the |Sec-WebSocket-Key|
 ```language=Pharo&caption=Beautiful&anchor=Fig1
    ""we can see what result of running sha1 over ""
 (SHA1 new hashStream: 'The quick brown fox jumps over the lazy dog' readStream) hex.
-
 ```
+
 "
 Class {
 	#name : 'Frog',
@@ -42,19 +63,17 @@ Class {
 }
 
 { #category : 'Sha1' }
-Frog >> test1 [
-"test sha1 for rfc example"
-^ (SHA1 new hashStream: 'The quick brown fox jumps over the lazy dog' readStream) hex.
-
-]
-
-{ #category : 'Sha1' }
-Frog >> test2 [
-"test sha1 for rfc example"
-| part1 part2 concat |
-part1 := 'dGhlIHNhbXBsZSBub25jZQ=='.
-part2 := '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'.
-concat := part1 , part2 . 
-^ (SHA1 new hashStream: concat readStream) hex.
+Frog >> handshake [
+"test handshake for rfc example"
+| key guid concatKeyGuid sha1 enc | 
+key := 'dGhlIHNhbXBsZSBub25jZQ=='.
+guid := '258EAFA5-E914-47DA-95CA-C5AB0DC85B11'.
+"concatenate web socket key with globally unique identifier - fixed ?"
+concatKeyGuid := key , guid .
+"compute sha1 of concatenated headers"
+sha1 := SHA1 new hashMessage: concatKeyGuid . 
+"compute base64 encoding"
+enc := ZnBase64Encoder new encode: sha1. 
+^ enc .
 
 ]
