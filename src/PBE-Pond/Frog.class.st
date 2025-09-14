@@ -54,6 +54,11 @@ Concretely, if as in the example above, the |Sec-WebSocket-Key|
 (SHA1 new hashStream: 'The quick brown fox jumps over the lazy dog' readStream) hex.
 ```
 
+UUID is same as GUID
+universally unique identifier uuid
+global unique identifier guid
+
+
 "
 Class {
 	#name : 'Frog',
@@ -77,3 +82,4 @@ enc := ZnBase64Encoder new encode: sha1.
 ^ enc .
 
 ]
+
