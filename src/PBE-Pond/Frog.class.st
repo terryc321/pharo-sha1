@@ -130,11 +130,15 @@ m := MD5 new hashMessage:aString.
 { #category : 'Sha1' }
 Frog >> md5sum: aFilename [
 "compute md5 from a file stream"
-|m aString aFileStream |
-aString := '/tmp/smalltalk/pack-61fe230b540d7d815ff049a3895f03c1f6657c11.pack' asFileReference contents .
-self halt.
-m := MD5 new hashMessage: (aFileStream contents).
+|m fr str |
+('/tmp/smalltalk/pack-61fe230b540d7d815ff049a3895f03c1f6657c11.pack' asFileReference) binaryReadStreamDo: [ :fr | 
+     m := MD5 new hashStream: fr .
+	 ].
+
+"m := MD5 new hashMessage: str. (aFileStream contents)."
+"str := fr contents. "
 ^ m hex. 
+
 
 
 
