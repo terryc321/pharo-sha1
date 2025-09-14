@@ -59,7 +59,7 @@ universally unique identifier uuid
 global unique identifier guid
 
 changes made in pharo 12 .
-
+changes made in pharo 14. 
 
 
 "
