@@ -1,5 +1,5 @@
 Class {
-	#name : 'MyLearning',
+	#name : 'Frog',
 	#superclass : 'Object',
 	#category : 'Sha1-Examples',
 	#package : 'Sha1-Examples'
