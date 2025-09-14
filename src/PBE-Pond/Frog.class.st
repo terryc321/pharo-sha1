@@ -58,6 +58,9 @@ UUID is same as GUID
 universally unique identifier uuid
 global unique identifier guid
 
+changes made in pharo 12 .
+
+
 
 "
 Class {
@@ -82,4 +85,3 @@ enc := ZnBase64Encoder new encode: sha1.
 ^ enc .
 
 ]
-
