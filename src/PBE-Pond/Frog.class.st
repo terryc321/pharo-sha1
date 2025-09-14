@@ -54,12 +54,23 @@ Concretely, if as in the example above, the |Sec-WebSocket-Key|
 (SHA1 new hashStream: 'The quick brown fox jumps over the lazy dog' readStream) hex.
 ```
 
+generateGuid
 UUID is same as GUID
 universally unique identifier uuid
 global unique identifier guid
 
 changes made in pharo 12 .
 changes made in pharo 14. 
+
+
+md5: aString
+
+md5sum: aFile 
+aPositionableStream 
+asFileReference
+
+
+
 
 
 "
@@ -69,6 +80,22 @@ Class {
 	#category : 'PBE-Pond',
 	#package : 'PBE-Pond'
 }
+
+{ #category : 'Sha1' }
+Frog >> bitsFromBytes: nBytes [
+"how many bits from nBytes"
+^ nBytes * 8 .
+
+
+]
+
+{ #category : 'Sha1' }
+Frog >> generateGuid [
+"make a globally unique identifier"
+^ (ByteArray new: 16) generateUUIDInPlace . 
+
+
+]
 
 { #category : 'Sha1' }
 Frog >> handshake [
@@ -83,5 +110,19 @@ sha1 := SHA1 new hashMessage: concatKeyGuid .
 "compute base64 encoding"
 enc := ZnBase64Encoder new encode: sha1. 
 ^ enc .
+
+]
+
+{ #category : 'Sha1' }
+Frog >> md5: aString [
+"compute md5 from a byte array"
+"hashStream aPositionable stream"
+"we want a human readable hex representation in string as result"
+|m|
+m := MD5 new hashMessage:aString. 
+^ m hex. 
+
+
+
 
 ]
