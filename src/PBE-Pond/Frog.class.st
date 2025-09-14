@@ -1,8 +1,8 @@
 Class {
 	#name : 'Frog',
 	#superclass : 'Object',
-	#category : 'Sha1-Examples',
-	#package : 'Sha1-Examples'
+	#category : 'Sha1',
+	#package : 'PBE-Pond'
 }
 
 { #category : 'tests' }
