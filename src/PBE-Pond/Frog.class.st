@@ -92,7 +92,65 @@ f := Frog new.
 r := nil.
 MessageTally spyOn: [ r := f profileMD5b ] .
 
+unfortunately looks like 66% percent time is spent on primitives 
 
+ - 267909 tallies, 267909 msec.
+
+**Tree**
+--------------------------------
+Process: (40) Morphic UI Process: nil
+--------------------------------
+66.7% {178592ms} Frog>>md5sum:
+  66.7% {178592ms} FileReference(AbstractFileReference)>>binaryReadStreamDo:
+    66.7% {178592ms} FullBlockClosure(BlockClosure)>>ensure:
+      66.7% {178592ms} FileReference(AbstractFileReference)>>binaryReadStreamDo:
+        66.7% {178592ms} Frog>>md5sum:
+          66.7% {178592ms} MD5NonPrimitive(MD5)>>hashStream:
+            66.1% {177122ms} MD5NonPrimitive>>processBuffer:
+              61.9% {165813ms} MD5NonPrimitive>>rounds:
+                |61.8% {165693ms} Array(Collection)>>doWithIndex:
+                |  61.8% {165553ms} Array(SequenceableCollection)>>withIndexDo:
+                |    61.3% {164307ms} MD5NonPrimitive>>rounds:
+                |      61.2% {163908ms} MD5NonPrimitive>>round:selector:round:
+                |        56.1% {150391ms} MD5NonPrimitive>>step:template:selector:
+                |          |10.4% {27888ms} MD5NonPrimitive>>ffA:B:C:D:M:S:T:
+                |          |  |3.7% {9884ms} primitives
+                |          |  |3.3% {8952ms} MD5NonPrimitive>>fX:Y:Z:
+                |          |  |  |1.5% {4039ms} ThirtyTwoBitRegister>>bitInvert
+                |          |  |2.8% {7463ms} ThirtyTwoBitRegister>>+=
+                |          |10.0% {26705ms} primitives
+                |          |9.7% {25888ms} MD5NonPrimitive>>ggA:B:C:D:M:S:T:
+                |          |  |3.6% {9602ms} primitives
+                |          |  |3.2% {8641ms} MD5NonPrimitive>>gX:Y:Z:
+                |          |  |  |1.5% {4030ms} ThirtyTwoBitRegister>>bitInvert
+                |          |  |2.3% {6135ms} ThirtyTwoBitRegister>>+=
+                |          |9.2% {24568ms} MD5NonPrimitive>>iiA:B:C:D:M:S:T:
+                |          |  |3.5% {9400ms} primitives
+                |          |  |3.0% {8034ms} MD5NonPrimitive>>iX:Y:Z:
+                |          |  |  |1.5% {4095ms} ThirtyTwoBitRegister(FixedBitWidthRegister)>>bitXor:
+                |          |  |2.2% {5773ms} ThirtyTwoBitRegister>>+=
+                |          |8.9% {23891ms} MD5NonPrimitive>>hhA:B:C:D:M:S:T:
+                |          |  |3.5% {9429ms} primitives
+                |          |  |3.2% {8663ms} ThirtyTwoBitRegister>>+=
+                |          |  |1.5% {3991ms} MD5NonPrimitive>>hX:Y:Z:
+                |          |8.0% {21451ms} OrderedCollection>>at:
+                |        5.0% {13517ms} primitives
+              1.8% {4871ms} primitives
+              1.2% {3316ms} ThirtyTwoBitRegister class(FixedBitWidthRegister class)>>new
+
+**Leaves**
+
+**Memory**
+	old			+0 bytes
+	young		+3,138,136 bytes
+	used		+3,138,136 bytes
+	free		-3,138,136 bytes
+
+**GCs**
+	full			0 totalling 0ms (0.0% uptime)
+	incr		15496 totalling 2,780ms (1.0% uptime), avg 0.0ms
+	tenures		0
+	root table	0 overflows
 
 
 
